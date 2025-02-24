@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=4 format=3 uid="uid://xt531r52iaca"]
+
+[ext_resource type="Script" path="res://Scripts/MeleeWeaponResource.gd" id="1_l3rmm"]
+[ext_resource type="Script" path="res://Scripts/RangedWeaponResource.gd" id="2_c0ibm"]
+[ext_resource type="Script" path="res://Scripts/unitData.gd" id="3_x5md8"]
+
+[resource]
+script = ExtResource("3_x5md8")
+M = 50
+T = 5
+SV = 3
+W = 2
+LD = 6
+OC = 2
+RANGED_WEAPONS = Array[ExtResource("2_c0ibm")]([])
+MELEE_WEAPONS = Array[ExtResource("1_l3rmm")]([])
+SIZE = 13.0
+NAME = "Plague Marine"

@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://mba1j3na0dxm"]
+
+[ext_resource type="Script" path="res://game.gd" id="1_xek20"]
+[ext_resource type="PackedScene" uid="uid://cnu2w0gc60ltk" path="res://unit.tscn" id="2_0e13u"]
+
+[sub_resource type="TileSet" id="TileSet_8cds6"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_xek20")
+unit_scene = ExtResource("2_0e13u")
+
+[node name="Map" type="Node2D" parent="."]
+
+[node name="TileMap" type="TileMap" parent="Map"]
+tile_set = SubResource("TileSet_8cds6")
+format = 2
+
+[node name="Layer0" type="TileMapLayer" parent="Map/TileMap"]
+use_parent_material = true
+tile_set = SubResource("TileSet_8cds6")
+
+[node name="Units" type="Node2D" parent="Map"]

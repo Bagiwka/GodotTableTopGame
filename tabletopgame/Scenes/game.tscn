@@ -1,0 +1,153 @@
+[gd_scene load_steps=24 format=3 uid="uid://mba1j3na0dxm"]
+
+[ext_resource type="Script" path="res://Scripts/game.gd" id="1_xek20"]
+[ext_resource type="PackedScene" uid="uid://cnu2w0gc60ltk" path="res://Scenes/unit.tscn" id="2_0e13u"]
+[ext_resource type="Script" path="res://Scripts/camera_2d.gd" id="3_fwia0"]
+[ext_resource type="Script" path="res://Scripts/hud.gd" id="5_f0ven"]
+[ext_resource type="Script" path="res://Scripts/distance.gd" id="6_1lasa"]
+[ext_resource type="Script" path="res://Scripts/unitSelector.gd" id="6_qrmxa"]
+[ext_resource type="Script" path="res://Scripts/next_turn_button.gd" id="9_ac41b"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8kwin"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6d5ff"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x4kal"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vr7l0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6r6cd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3qsdn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w37fo"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qcmgb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nttpx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_65bub"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2cqe6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jjni7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_htmoe"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r72qb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ssxny"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_svxqv"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_xek20")
+unit_scene = ExtResource("2_0e13u")
+
+[node name="Map" type="Node2D" parent="."]
+
+[node name="Units" type="Node2D" parent="Map"]
+light_mask = 3
+visibility_layer = 3
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("3_fwia0")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Log" type="Label" parent="HUD"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Distance" type="Label" parent="HUD"]
+visible = false
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Movement: 0.0"
+script = ExtResource("6_1lasa")
+
+[node name="SelectorBox" type="Node2D" parent="HUD"]
+light_mask = 3
+visibility_layer = 3
+script = ExtResource("5_f0ven")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="HUD/SelectorBox"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SelectorButton" type="MenuButton" parent="HUD"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -144.0
+offset_top = 2.0
+offset_bottom = 52.0
+grow_horizontal = 0
+flat = false
+script = ExtResource("6_qrmxa")
+
+[node name="Side" type="CheckButton" parent="HUD/SelectorButton"]
+layout_mode = 0
+offset_left = -39.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 19.0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_8kwin")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_6d5ff")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_x4kal")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_vr7l0")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_6r6cd")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_3qsdn")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_w37fo")
+action_mode = 0
+flat = true
+
+[node name="FinishSpawningButton" type="Button" parent="HUD/SelectorButton"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0763889
+anchor_top = 1.04
+anchor_right = 0.847222
+anchor_bottom = 1.62
+offset_right = 22.0
+offset_bottom = 2.0
+grow_horizontal = 2
+text = "Finish Spawning"
+metadata/_edit_use_anchors_ = true
+
+[node name="UnifyButton" type="Button" parent="HUD/SelectorButton"]
+visible = false
+layout_mode = 0
+offset_left = -158.0
+offset_right = -34.0
+offset_bottom = 31.0
+text = "Make One Unit"
+
+[node name="NextTurnButton" type="Button" parent="HUD"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -8.0
+offset_top = -8.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_qcmgb")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_nttpx")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_65bub")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_2cqe6")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_jjni7")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_htmoe")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_r72qb")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ssxny")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_svxqv")
+script = ExtResource("9_ac41b")
+
+[connection signal="pressed" from="HUD/SelectorButton/UnifyButton" to="HUD/SelectorButton" method="_on_unify_button_pressed"]
+[connection signal="pressed" from="HUD/NextTurnButton" to="HUD/NextTurnButton" method="_on_pressed"]

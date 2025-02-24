@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://cnu2w0gc60ltk"]
+
+[ext_resource type="Texture2D" uid="uid://d3jvbw7jvgg53" path="res://Sprite1.png" id="1_ikipo"]
+[ext_resource type="Script" path="res://Scripts/unit.gd" id="1_tr0bk"]
+[ext_resource type="Texture2D" uid="uid://iolc7xn6cwin" path="res://SpriteGhost.png" id="3_qfo8i"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rd1p5"]
+radius = 171.211
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Unit" type="CharacterBody2D" parent="."]
+input_pickable = true
+script = ExtResource("1_tr0bk")
+
+[node name="Sprite2D" type="Sprite2D" parent="Unit"]
+texture = ExtResource("1_ikipo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Unit"]
+visible = false
+top_level = true
+position = Vector2(0, 1)
+shape = SubResource("CircleShape2D_rd1p5")
+debug_color = Color(0.864969, 0.000585077, 0.863131, 0.42)
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="Unit"]
+
+[node name="Ghost" type="Sprite2D" parent="Unit"]
+visible = false
+texture = ExtResource("3_qfo8i")
+
+[node name="Line2D" type="Line2D" parent="Unit"]
+visible = false
+width = 0.25
+default_color = Color(0, 0, 0, 1)

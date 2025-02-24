@@ -1,0 +1,94 @@
+{
+	"Chaos": {
+		"Death Guard": {
+			"Plague Marine": {
+				"spawn_function": "spawn_Plague_Marine",
+				"ranged": [
+					"Plague Boltgun",
+					"Blight Launcher",
+					"Meltagun",
+					"Plague Belcher",
+					"Plague Bolt Pistol",
+					"Plague Spewer",
+					"Plasma Gun"
+				],
+				"melee": [
+					"Bubotic Weapons",
+					"Heavy Plague Weapon",
+					"Plague Knives"
+				]
+			},
+			"Blightlord Terminator": {
+				"spawn_function": "spawn_Blightlord_Terminator",
+				"ranged": [
+					"Reaper Autocannon",
+					"Combi-Bolter"
+				],
+				"melee": [
+					"Reaper Autocannon",
+					"Combi-Bolter"
+				]
+			}
+		},
+		"World Eaters": {
+			"Khorne Berserker": {
+				"spawn_function": "spawn_Khorne_Berserker",
+				"ranged": [],
+				"melee": [
+					"Chainaxe",
+					"Chainsword"
+				]
+			}
+		}
+	},
+	"Imperium": {
+		"Space Marines": {
+			"Tactical Marine": {
+				"spawn_function": "spawn_Tactical_Marine",
+				"ranged": [
+					"Bolter",
+					"Plasma Gun"
+				],
+				"melee": [
+					"Bolter",
+					"Plasma Gun"
+				]
+			},
+			"Terminator": {
+				"spawn_function": "spawn_Terminator",
+				"ranged": [
+					"Storm Bolter",
+					"Power Fist"
+				],
+				"melee": [
+					"Storm Bolter",
+					"Power Fist"
+				]
+			}
+		},
+		"Astra Militarum": {
+			"Guardsman": {
+				"spawn_function": "spawn_Guardsman",
+				"ranged": [
+					"Lasgun",
+					"Plasma Gun"
+				],
+				"melee": [
+					"Lasgun",
+					"Plasma Gun"
+				]
+			},
+			"Ogryn": {
+				"spawn_function": "spawn_Ogryn",
+				"ranged": [
+					"Ripper Gun",
+					"Power Maul"
+				],
+				"melee": [
+					"Ripper Gun",
+					"Power Maul"
+				]
+			}
+		}
+	}
+}

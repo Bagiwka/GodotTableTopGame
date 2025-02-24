@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="UnitData" load_steps=4 format=3 uid="uid://ctwcyodkmnaji"]
+
+[ext_resource type="Script" path="res://Scripts/unitData.gd" id="1_jhhnf"]
+[ext_resource type="Script" path="res://Scripts/MeleeWeaponResource.gd" id="1_u7vm0"]
+[ext_resource type="Script" path="res://Scripts/RangedWeaponResource.gd" id="2_mv1i1"]
+
+[resource]
+script = ExtResource("1_jhhnf")
+M = 40
+T = 6
+SV = 2
+W = 3
+LD = 6
+OC = 1
+RANGED_WEAPONS = Array[ExtResource("2_mv1i1")]([])
+MELEE_WEAPONS = Array[ExtResource("1_u7vm0")]([])
+SIZE = 15.7
+NAME = "Blightlord Terminator"
