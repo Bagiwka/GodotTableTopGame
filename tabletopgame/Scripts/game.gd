@@ -79,6 +79,7 @@ func fight(attacker:CharacterBody2D, enemy: CharacterBody2D) -> Array:
 		else: continue
 
 		#check WOUND ROLL
+
 		var needed_to_wound:int = 4
 		if (attacker.unit_data.S >= 2 * enemy.unit_data.T):
 			needed_to_wound = 2
@@ -233,44 +234,64 @@ func shoot_at(shooter:CharacterBody2D, enemy: CharacterBody2D, weapon: RangedWea
 	var succeded_wounds: int = 0
 	var failed_saves: int = 0
 	
-	for i in range(0, weapon.A):
-		#check HIT ROLL
-		if (randi_range(1, 7) >= weapon.BS):
-			succeded_hits+=1
-		else: continue
+	
+	var A = weapon.A
+	if ("D" in A):
+		var split = A.split("D")
+		A = randi_range(1, int(split[1])+1)
+		for i in range(0, int(split[0]) * A):
+			#check HIT ROLL
+			if (randi_range(1, 7) >= weapon.BS):
+				succeded_hits+=1
+			else: continue
+	else:
+		for i in range(0, int(A)):
+			#check HIT ROLL
+			if (randi_range(1, 7) >= weapon.BS):
+				succeded_hits+=1
+			else: continue
 
-
+	for i in range(0, succeded_hits):
 		var T = enemy.unit_data.T
+		var S = weapon.S
 		#check WOUND ROLL
 		var needed_to_wound:int = 4
-		if (weapon.S >= 2 * T):
+		if (S >= 2 * T):
 			needed_to_wound = 2
-		else: if (weapon.S > T):
+		elif (S > T):
 			needed_to_wound = 3
-		else: if (weapon.S <= 0.5 * T):
+		elif (S <= 0.5 * T):
 			needed_to_wound = 6
-		else: if (weapon.S < T):
+		elif (S < T):
 			needed_to_wound = 5
+		if (S >= 999):
+			needed_to_wound = 0
 		if (randi_range(1, 7) >= needed_to_wound):
 			succeded_wounds+=1
 		else: continue
-
 		if (randi_range(1, 7) - weapon.AP < enemy.unit_data.SV):
 			failed_saves+=1
 
-	damage_done = failed_saves * weapon.D
+	if "D" not in weapon.D:
+		damage_done = failed_saves * int(weapon.D)
+	else:
+		var split = weapon.D.split("D")
+		print(split)
+		damage_done = int(split[0]) * randi_range(1, int(split[1])+1)
 	enemy.WOUNDS -= damage_done
 
 	if (enemy.WOUNDS <= 0): 
 		enemy.queue_free()
 		get_node("/root/Game/Map/Units").remove_child(enemy.get_parent())
 
+	
+
 	var result: Array = []
 	result.append(succeded_hits)
 	result.append(succeded_wounds)
 	result.append(failed_saves)
 	result.append(damage_done)
-	result.append(weapon.A)
+	result.append(int(A))
 	return result
 
 func parse_shoot_at_result(array: Array):

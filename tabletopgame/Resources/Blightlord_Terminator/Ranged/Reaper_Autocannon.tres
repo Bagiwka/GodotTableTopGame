@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RangedWeaponResource" load_steps=2 format=3 uid="uid://beuu4fahcjth"]
+
+[ext_resource type="Script" path="res://Scripts/RangedWeaponResource.gd" id="1_gstfc"]
+
+[resource]
+script = ExtResource("1_gstfc")
+R = 360
+A = "4"
+BS = 3
+S = 7
+AP = 1
+D = "1"

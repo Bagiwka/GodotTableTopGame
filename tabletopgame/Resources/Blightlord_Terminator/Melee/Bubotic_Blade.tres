@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="MeleeWeaponResource" load_steps=2 format=3 uid="uid://bk3j0ustdk7ff"]
+
+[ext_resource type="Script" path="res://Scripts/MeleeWeaponResource.gd" id="1_5bbej"]
+
+[resource]
+script = ExtResource("1_5bbej")
+A = 4
+WS = 3
+S = 5
+AP = 2
+D = 1

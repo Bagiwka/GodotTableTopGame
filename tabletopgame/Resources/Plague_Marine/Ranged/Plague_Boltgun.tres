@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_saknv")
 R = 240
-A = 2
+A = "2"
 BS = 3
 S = 4
 AP = 0
-D = 1
+D = "1"

@@ -21,12 +21,15 @@
 			"Blightlord Terminator": {
 				"spawn_function": "spawn_Blightlord_Terminator",
 				"ranged": [
-					"Reaper Autocannon",
-					"Combi-Bolter"
+					"Blight Launcher",
+					"Combi-Weapon",
+					"Plague Combi-Bolter",
+					"Plague Spewer",
+					"Reaper Autocannon"
 				],
 				"melee": [
-					"Reaper Autocannon",
-					"Combi-Bolter"
+					"Bubotic Blade",
+					"Flail Of Corruption"
 				]
 			}
 		},

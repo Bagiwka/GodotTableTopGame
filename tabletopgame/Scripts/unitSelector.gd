@@ -147,9 +147,11 @@ func _on_spawn_pressed():
 	var new_ranged: Array[RangedWeaponResource]
 	
 	for melee in selected_melee:
-		new_melee.append(load("res://Resources/"+selected_unit_name+"/Melee/" + melee.replace(" ", "_") + ".tres"))
+		melee = melee.replace(" ", "_").replace("-","_")
+		new_melee.append(load("res://Resources/"+selected_unit_name+"/Melee/" + melee + ".tres"))
 	for ranged in selected_weapons:
-		new_ranged.append(load("res://Resources/"+selected_unit_name+"/Ranged/" + ranged.replace(" ", "_") + ".tres"))
+		ranged = ranged.replace(" ", "_").replace("-","_")
+		new_ranged.append(load("res://Resources/"+selected_unit_name+"/Ranged/" + ranged + ".tres"))
 	
 	if game:
 		game.spawn(selected_unit_name, new_ranged, new_melee)
@@ -167,3 +169,4 @@ func _on_unify_button_pressed() -> void:
 				model.remove_from_group(group)
 		model.add_to_group("Unit: " + str(GameManager.amount_of_units))
 	GameManager.amount_of_units += 1
+	log.text = "Unified to one unit"
