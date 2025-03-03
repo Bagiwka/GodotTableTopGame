@@ -26,9 +26,9 @@ func spawn_loop(name: String, group: int, ranged: Array[RangedWeaponResource], m
 	character_body.unit_data = load("res://Resources/"+name+"/"+name+".tres")
 	# Check if the button is disabled correctly
 	if $HUD/SelectorButton/Side.button_pressed:
-		character_body.add_to_group("Player Two")
+		character_body.add_to_group("Player 2")
 	else: 
-		character_body.add_to_group("Player One")
+		character_body.add_to_group("Player 1")
 	$Map/Units.add_child(unit)
 
 	character_body.add_to_group("Unit: " + str(group))
@@ -53,7 +53,7 @@ func spawn_loop(name: String, group: int, ranged: Array[RangedWeaponResource], m
 	selected_model = null
 	character_body.position = position
 	
-func fight(attacker:CharacterBody2D, enemy: CharacterBody2D) -> Array:
+func fight(attacker:CharacterBody2D, enemy: CharacterBody2D, weapon: MeleeWeaponResource) -> Array:
 	
 	#check groups
 	if (&"Player One" in attacker.get_groups() and &"Player One" in enemy.get_groups()) or (&"Player Two" in attacker.get_groups() and &"Player Two" in enemy.get_groups()):
@@ -71,33 +71,48 @@ func fight(attacker:CharacterBody2D, enemy: CharacterBody2D) -> Array:
 	var succeded_hits: int = 0
 	var succeded_wounds: int = 0
 	var failed_saves: int = 0
-	
-	for i in range(0, attacker.unit_data.A):
-		#check HIT ROLL
-		if (randi_range(1, 7) >= attacker.unit_data.WS):
-			succeded_hits+=1
-		else: continue
-
+	var A = weapon.A
+	if ("D" in A):
+		var split = A.split("D")
+		A = randi_range(1, int(split[1]))
+		for i in range(0, int(split[0]) * A):
+			print("1")
+			#check HIT ROLL
+			if (randi_range(1, 6) >= weapon.WS):
+				succeded_hits+=1
+			else: continue
+	else:
+		for i in range(0, int(A)):
+			print(i)
+			#check HIT ROLL
+			if (randi_range(1, 6) >= weapon.WS):
+				succeded_hits+=1
+			else: continue
 		#check WOUND ROLL
-
+	for i in succeded_hits:
 		var needed_to_wound:int = 4
-		if (attacker.unit_data.S >= 2 * enemy.unit_data.T):
+		if (weapon.S >= 2 * enemy.unit_data.T):
 			needed_to_wound = 2
-		else: if (attacker.unit_data.S > enemy.unit_data.T):
+		else: if (weapon.S > enemy.unit_data.T):
 			needed_to_wound = 3
-		else: if (attacker.unit_data.S <= 0.5 * enemy.unit_data.T):
+		else: if (weapon.S <= 0.5 * enemy.unit_data.T):
 			needed_to_wound = 6
-		else: if (attacker.unit_data.S < enemy.unit_data.T):
+		else: if (weapon.S < enemy.unit_data.T):
 			needed_to_wound = 5
-		if (randi_range(1, 7) >= needed_to_wound):
+		if (randi_range(1, 6) >= needed_to_wound):
 			succeded_wounds+=1
 		else: continue
 
-		if (randi_range(1, 7)-attacker.unit_data.AP < enemy.unit_data.SV):
+		if (randi_range(1, 6)-weapon.AP < enemy.unit_data.SV):
 			failed_saves+=1
-
-	damage_done = failed_saves * attacker.unit_data.D
-	enemy.WOUNDS -= damage_done + 10
+			
+	if "D" not in weapon.D:
+		damage_done = failed_saves * int(weapon.D)
+	else:
+		var split = weapon.D.split("D")
+		for i in split[0]:
+			damage_done += randi_range(1, int(split[1]))
+	enemy.WOUNDS -= damage_done
 
 	if (enemy.WOUNDS <= 0): 
 		enemy.queue_free()
@@ -108,11 +123,35 @@ func fight(attacker:CharacterBody2D, enemy: CharacterBody2D) -> Array:
 	result.append(succeded_wounds)
 	result.append(failed_saves)
 	result.append(damage_done)
-	result.append(attacker.unit_data.A)
+	result.append(int(A))
 	return result
 	
 func parse_fight_result(array: Array):
-	return
+	if (array == [-1]): 
+		log.text = "Can't attack your own models."
+		return
+	elif (array == [-2]): 
+		log.text = "Didn't attack the model you charged."
+		return
+	elif (array == [-5]): 
+		log.text = "Model already acted this phase!" 
+		return
+		
+	var to_parse: Array = [0,0,0,0,0]
+	if (typeof(array[0]) == TYPE_INT):
+		array = [[array[0],array[1],array[2],array[3],array[4]]]
+	
+	for array1 in array:
+		to_parse[0] += array1[0]
+		to_parse[1] += array1[1]
+		to_parse[2] += array1[2]
+		to_parse[3] += array1[3]
+		to_parse[4] += array1[4]
+		
+	log.text = (str(to_parse[0]) + " shots hit out of " + str(to_parse[4])+ ".\n" +
+		str(to_parse[1]) + " shots wounded out of " + str(to_parse[0])+ ".\n" +
+		str(to_parse[1] - to_parse[2]) + " successful saves out of " + str(to_parse[1]) + ".\n" +
+		str(to_parse[3]) + " damage done.")
 	
 func charge_at(charger: CharacterBody2D, enemy: CharacterBody2D) -> Array:
 	
@@ -120,7 +159,7 @@ func charge_at(charger: CharacterBody2D, enemy: CharacterBody2D) -> Array:
 		return [-4]
 	
 	var move_distance: int = 0
-	move_distance = randi_range(1, 13) * 10
+	move_distance = randi_range(2, 12) * 10
 	
 	#check groups
 	if (&"Player One" in charger.get_groups() and &"Player One" in enemy.get_groups()) or (&"Player Two" in charger.get_groups() and &"Player Two" in enemy.get_groups()):
@@ -238,16 +277,18 @@ func shoot_at(shooter:CharacterBody2D, enemy: CharacterBody2D, weapon: RangedWea
 	var A = weapon.A
 	if ("D" in A):
 		var split = A.split("D")
-		A = randi_range(1, int(split[1])+1)
+		A = randi_range(1, int(split[1]))
 		for i in range(0, int(split[0]) * A):
+			print("1")
 			#check HIT ROLL
-			if (randi_range(1, 7) >= weapon.BS):
+			if (randi_range(1, 6) >= weapon.BS):
 				succeded_hits+=1
 			else: continue
 	else:
 		for i in range(0, int(A)):
+			print(i)
 			#check HIT ROLL
-			if (randi_range(1, 7) >= weapon.BS):
+			if (randi_range(1, 6) >= weapon.BS):
 				succeded_hits+=1
 			else: continue
 
@@ -266,18 +307,18 @@ func shoot_at(shooter:CharacterBody2D, enemy: CharacterBody2D, weapon: RangedWea
 			needed_to_wound = 5
 		if (S >= 999):
 			needed_to_wound = 0
-		if (randi_range(1, 7) >= needed_to_wound):
+		if (randi_range(1, 6) >= needed_to_wound):
 			succeded_wounds+=1
 		else: continue
-		if (randi_range(1, 7) - weapon.AP < enemy.unit_data.SV):
+		if (randi_range(1, 6) - weapon.AP < enemy.unit_data.SV):
 			failed_saves+=1
 
 	if "D" not in weapon.D:
 		damage_done = failed_saves * int(weapon.D)
 	else:
 		var split = weapon.D.split("D")
-		print(split)
-		damage_done = int(split[0]) * randi_range(1, int(split[1])+1)
+		for i in split[0]:
+			damage_done += randi_range(1, int(split[1]))
 	enemy.WOUNDS -= damage_done
 
 	if (enemy.WOUNDS <= 0): 
@@ -330,7 +371,7 @@ func can_move_to(target_position: Vector2) -> bool:
 	var distance: float = selected_model.global_position.distance_to(target_position)
 	
 	if (distance + selected_model._moved_this_turn > selected_model.unit_data.M):
-		if (not GameManager.current_phase == GameManager.PHASES.SETUP):
+		if (not GameManager.current_phase == GameManager.PHASES.SETUP_ONE and not GameManager.current_phase == GameManager.PHASES.SETUP_TWO):
 			log.text = "Distance too large to move"
 			return false
 	

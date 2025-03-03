@@ -27,7 +27,7 @@ func _ready():
 	
 	set_unit_size(unit_data.SIZE)
 	
-	if &"Player One" in get_groups():
+	if &"Player 1" in get_groups():
 		color = Color(5, 0, 0)
 	else:
 		color = Color(0, 0, 5)
@@ -57,8 +57,14 @@ func set_unit_size(size: float):
 
 func _input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if not GameManager.selected_unit:
+			var current_player_group = "Player " + str(GameManager.player_turn)
+			if not GameManager.current_phase == GameManager.PHASES.SETUP_ONE and not GameManager.current_phase == GameManager.PHASES.SETUP_TWO:
+				if not current_player_group in get_groups():
+					log.text = "It's not your turn to select this unit!"
+					return
 		if not self in GameManager.to_unify:
-			if (GameManager.current_phase == GameManager.PHASES.SETUP):
+			if (GameManager.current_phase == GameManager.PHASES.SETUP_ONE or GameManager.current_phase == GameManager.PHASES.SETUP_TWO):
 				if (GameManager.to_unify_group == "" or GameManager.to_unify_group in self.get_groups()):
 					$Sprite2D.modulate = Color(0, 5, 0)
 					GameManager.to_unify.append(self)
@@ -69,12 +75,14 @@ func _input_event(viewport, event, shape_idx):
 						get_node("/root/Game/HUD/SelectorButton/UnifyButton").visible = true
 				else:
 					log.text = "Deselect before selecting units of the opposite player"
+		
 		if GameManager.selected_unit != self:
 			GameManager.set_selected(self)
 		else:
 			log.text = ""
 			deselect()
 			GameManager.deselect()
+
 
 func proxy_select():
 	$Sprite2D.modulate = Color(0, 2, 0)
@@ -84,7 +92,7 @@ func select():
 		var model = unit.get_child(0)
 		if (model != self and model != null):
 			if (model.get_groups() == get_groups()):
-				if (not GameManager.current_phase == GameManager.PHASES.SETUP):
+				if (not GameManager.current_phase == GameManager.PHASES.SETUP_ONE and not GameManager.current_phase == GameManager.PHASES.SETUP_TWO):
 					model.proxy_select()
 				if not model in whole_unit:
 					whole_unit.append(model)
@@ -116,7 +124,7 @@ func _unhandled_input(event):
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if not _selected:
 				return
-			if (GameManager.current_phase != GameManager.PHASES.MOVEMENT and GameManager.current_phase != GameManager.PHASES.SETUP):
+			if (GameManager.current_phase != GameManager.PHASES.MOVEMENT and GameManager.current_phase != GameManager.PHASES.SETUP_ONE and GameManager.current_phase != GameManager.PHASES.SETUP_TWO):
 				log.text = "Can't Move in the current phase."
 				return
 			var target_position = get_global_mouse_position()

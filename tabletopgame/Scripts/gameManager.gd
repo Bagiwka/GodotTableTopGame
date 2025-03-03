@@ -1,13 +1,15 @@
 extends Node
 
 var selected_unit: CharacterBody2D
-enum PHASES {SETUP, COMMAND, MOVEMENT, SHOOTING, CHARGE, FIGHT}
-var current_phase: PHASES = PHASES.SETUP
+enum PHASES {SETUP_ONE, SETUP_TWO, COMMAND, MOVEMENT, SHOOTING, CHARGE, FIGHT}
+var current_phase: PHASES = PHASES.SETUP_ONE
 var amount_of_units: int = 0
 var game_node
 var units
 var to_unify: Array[CharacterBody2D]
 var to_unify_group: String = ""
+var player_turn: int = 1
+var battle_round: int = 1
 
 func _ready() -> void:
 	game_node = get_node("/root/Game")
@@ -44,7 +46,7 @@ func shoot(unit: CharacterBody2D):
 	all_units.append(selected_unit)
 
 	for unit1 in all_units:
-		for weapon in unit1.ranged:	
+		for weapon in unit1.ranged:
 			var groups: Array = unit.get_groups()
 			var returned = game_node.shoot_at(unit1, unit, weapon)
 			var found:bool = false
@@ -93,28 +95,28 @@ func fight(unit: CharacterBody2D):
 	all_units.append(selected_unit)
 
 	for unit1 in all_units:
+		for weapon in unit1.melee:
+			var groups: Array = unit.get_groups()
+			var returned = game_node.fight(unit1, unit, weapon)
+			var found:bool = false
 
-		var groups: Array = unit.get_groups()
-		var returned = game_node.fight(unit1, unit)
-		var found:bool = false
+			for find in units.get_children():
+				if find.get_child(0) == unit: 
+					found = true
+					break
+			if (not found):
+				unit = find_next_enemy(groups, unit1)
+				if (unit == null):
+					result.append(returned)
+					break
 
-		for find in units.get_children():
-			if find.get_child(0) == unit: 
-				found = true
-				break
-		if (not found):
-			unit = find_next_enemy(groups, unit1)
-			if (unit == null):
-				result.append(returned)
-				break
-
-		if (len(returned) < 5):
-			game_node.parse_fight_result(returned)
-			deselect()
-			deselect_proxy(all_units)
-			return
-			
-		result.append(returned)
+			if (len(returned) < 5):
+				game_node.parse_fight_result(returned)
+				deselect()
+				deselect_proxy(all_units)
+				return
+				
+			result.append(returned)
 		
 	deselect_proxy(all_units)
 	game_node.parse_fight_result(result)
